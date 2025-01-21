@@ -1,105 +1,118 @@
 # Student-Led-Tutorial-3
-# Task: Tutorial for Gene Expression Analysis Using STAR and Visualization
+# Task: Tutorial for Gene Expression Analysis Using STAR, Gene Expression Quantification, and Differential Expression Analysis
 # Date: March 13th
 
 ## **Objective**
-Prepare a tutorial for your peers on performing RNA-seq data alignment using **STAR** and analyzing gene expression. The tutorial will cover alignment, quantification, and visualization of gene expression data, resulting in publication-ready visuals.
+Students will:
+1. Download RNA-seq data for **mock-infected** and **COVID-19-infected** human cell lines from the provided SRA project.
+2. Perform RNA-seq alignment using **STAR**.
+3. Quantify gene expression using **FeatureCounts**.
+4. Perform differential expression analysis between mock-infected and COVID-19-infected cells using **DESeq2** (or equivalent).
+5. Visualize results such as heatmaps and volcano plots to highlight key differentially expressed genes.
 
 ---
 
-## **Required Software**
-1. **STAR**: For RNA-seq alignment.
-   - [STAR Manual](https://github.com/alexdobin/STAR)
-2. **FeatureCounts**: For gene expression quantification.
-   - [FeatureCounts Documentation](http://bioinf.wehi.edu.au/featureCounts/)
-3. **R** or **Python**: For data visualization.
-   - R packages: `ggplot2`, `pheatmap`.
-   - Python libraries: `matplotlib`, `seaborn`.
-4. **Genome and Annotation Files**:
-   - Reference genome and GTF annotation file from [Ensembl](https://ftp.ensembl.org/pub/).
+## **Dataset Description**
+The dataset comes from the **NCBI BioProject PRJNA615032**, which includes RNA-seq data for human cell lines:
+- **Mock-infected cells**:
+  - SRA Accessions: `SRR11412215`, `SRR11412216`, `SRR11412217`, `SRR11412218` (4 replicates).
+- **COVID-19-infected cells**:
+  - SRA Accessions: `SRR11412227`, `SRR11412228`, `SRR11412229`, `SRR11412230`, `SRR11412231` (5 replicates).
+There are more data available in this project, students should be free to explore these data and modify SRA accessions accordingly.
 
----
+### **Download Instructions**
+Use the SRA Toolkit (must be installed beforehand if run locally, otherwise available in most HPCs) to download paired-end FASTQ files:
 
-## **Data to Use**
-- **Sample Dataset**: Paired-end RNA-seq data from Homo sapiens (e.g., SRR12345678).
-  - Download using SRA Toolkit:
-    ```bash
-    fastq-dump --split-files SRR12345678
-    ```
-    - This will generate paired-end files:
-      - `SRR12345678_1.fastq` and `SRR12345678_2.fastq`.
+   ``` bash
+   # Example for a mock-infected sample. More replicates are always better, so repeat step for each SRA    accession.
+   fastq-dump --split-files SRR11412215
+```
+or
 
----
+   ``` bash
+   # Example for a COVID-19-infected sample. More replicates are always better, so repeat step for each SRA accession.
+   fastq-dump --split-files SRR11412227
+```
 
 ## **Tasks and Deliverables**
-### **Part 1: Preparing Reference Files**
-1. Download the **reference genome (FASTA)** and **gene annotation file (GTF)**:
-   - Example: GRCh38 human genome from [Ensembl](https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/).
-
-2. Generate a STAR genome index:
+### **Part 1: Data Preparation**
+1. Download all replicates for mock and COVID-19-infected samples:
+        Mock-infected: SRR11412215 to SRR11412218.
+        COVID-19-infected: SRR11412227 to SRR11412231.
+2. Download the reference genome (FASTA) and annotation file (GTF):
+Source: Ensembl GRCh38 human genome: (https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/).
+- FASTA: Download FASTA file
+- GTF: Download GTF file
+3. Generate the STAR genome index:
    ```bash
-   STAR --runMode genomeGenerate --genomeDir star_index --genomeFastaFiles reference.fasta --sjdbGTFfile annotation.gtf --sjdbOverhang 100
-
-### **Part 2: Aligning Reads**
-
-1. Align paired-end reads to the reference genome using STAR:
+   STAR --runMode genomeGenerate --genomeDir star_index \
+    --genomeFastaFiles reference.fasta --sjdbGTFfile annotation.gtf --sjdbOverhang 100
+### **Part 2: Align Reads with STAR**
+1. Align each sample (mock or COVID-infected) to the genome:
    ```bash
-   STAR --genomeDir star_index --readFilesIn SRR12345678_1.fastq SRR12345678_2.fastq --outFileNamePrefix aligned_ --outSAMtype BAM SortedByCoordinate
-
-   - Key output files:
-     - aligned_Aligned.sortedByCoord.out.bam: Sorted BAM file with alignments.
-     - aligned_Log.final.out: STAR alignment statistics.
-
-2. Check alignment statistics:
-   - Total mapped reads.
-   - Percentage of uniquely mapped reads.
+   STAR --genomeDir star_index --readFilesIn SRR11412215_1.fastq SRR11412215_2.fastq \
+   --outFileNamePrefix mock_rep1_ --outSAMtype BAM SortedByCoordinate
+- Replace SRR11412215 with the appropriate sample name for each replicate.
+2. Output files for each sample:
+- Sorted BAM file (e.g., `mock_rep1_Aligned.sortedByCoord.out.bam`).
+- Alignment log file (e.g., `mock_rep1_Log.final.out`).
 
 ### **Part 3: Gene Expression Quantification**
-
-1. Use FeatureCounts to count reads mapped to genes:
+1. Use FeatureCounts to count reads mapped to genes for all samples and replicates :
    ```bash
-   featureCounts -a annotation.gtf -o counts.txt aligned_Aligned.sortedByCoord.out.bam
-  - Key output:
-    - *counts.txt*: Gene-level read counts.
-2. Normalize the counts (e.g., TPM or FPKM) using R or Python.
+   featureCounts -a annotation.gtf -o counts.txt \
+   mock_rep1_Aligned.sortedByCoord.out.bam \
+   mock_rep2_Aligned.sortedByCoord.out.bam \
+   covid_rep1_Aligned.sortedByCoord.out.bam \
+   covid_rep2_Aligned.sortedByCoord.out.bam
+
+- Include all BAM files from mock and COVID-infected replicates.
+
+2. Output file:
+- `counts.txt`: Contains gene-level counts for all samples.
+
+### **Part 4: Differential Expression Analysis**
+1. Use DESeq2 in R for differential expression analysis:
+- Load counts.txt and assign sample metadata:
    ```R
-   library(dplyr)
+   Library(DESeq2)
 
-   # Load the counts data
-   counts <- read.table("counts.txt", header = TRUE, row.names = 1)
+    # Load data
+    counts <- read.table("counts.txt", header=TRUE, row.names=1)
+    coldata <- data.frame(
+      condition = c(rep("mock", 2), rep("covid", 2)), # Adjust # of reps if needed
+      replicate = c(1:2, 1:2)
+    )
+    rownames(coldata) <- colnames(counts)[-c(1:6)]  # Adjust if needed
 
-   # Add gene lengths (in kb) for normalization (from annotation file)
-   counts$Length_kb <- counts$Length / 1000
+    # Create DESeq2 dataset
+    dds <- DESeqDataSetFromMatrix(countData=counts, colData=coldata, design=~condition)
 
-   # Calculate FPKM
-   counts$FPKM <- (counts$Counts / counts$Length_kb) / sum(counts$Counts) * 1e6
+    # Perform differential expression
+    dds <- DESeq(dds)
+    results <- results(dds)
+    write.csv(results, "differential_expression_results.csv")
+2. Identify differentially expressed genes:
 
-   # Calculate TPM
-   counts$TPM <- counts$FPKM / sum(counts$FPKM) * 1e6
+- Filter by adjusted p-value and log2 fold-change (e.g., p.adj < 0.05 and |log2FC| > 1).
 
-   # Save normalized counts
-   write.table(counts, "normalized_counts.txt", sep = "\t", quote = FALSE)
+### **Part 5: Data Visualization**
 
-
-### **Part 4: Data Visualization**
-
-1. Load the normalized counts into R or Python.
-
-2. Create visualizations:
-- Heatmap of gene expression:
-   ```R
-   library(pheatmap)
-   data <- read.table("normalized_counts.txt", header=TRUE, row.names=1)
-   pheatmap(data, scale="row", clustering_distance_rows="euclidean", clustering_distance_cols="euclidean", clustering_method="complete")
-- Volcano Plot for differential expression:
+1. Volcano Plot:
+- Highlight significant genes:
    ```R
    library(ggplot2)
-   data <- read.csv("differential_expression.csv")
-   ggplot(data, aes(x=log2FoldChange, y=-log10(pvalue), color=significant)) +
-      geom_point() +
-      theme_minimal()
-- Bar Chart:
--   Show expression levels of top 10 differentially expressed genes.
+results$significant <- results$padj < 0.05 & abs(results$log2FoldChange) > 1
+ggplot(results, aes(x=log2FoldChange, y=-log10(padj), color=significant)) +
+  geom_point() + theme_minimal() +
+  scale_color_manual(values=c("gray", "red"))
+2. Heatmap of Gene Expression:
+- Generate a heatmap for top 50 differentially expressed genes:
+   ```R
+   library(pheatmap)
+top_genes <- head(order(results$padj), 50)
+normalized_counts <- counts(dds, normalized=TRUE)
+pheatmap(normalized_counts[top_genes, ])
 
 ### **Optional: Use IGV to visualize mapped reads**:
 - Load the BAM file and gene annotation to check alignment coverage.
