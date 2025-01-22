@@ -11,7 +11,24 @@ Students will:
 5. Visualize results such as heatmaps and volcano plots to highlight key differentially expressed genes.
 
 ---
+## **Software and Manuals**
+### **Required Software**
+1. **STAR**: Spliced Transcript Alignment to a Reference.
+   - [STAR GitHub Repository](https://github.com/alexdobin/STAR)
+   - [STAR Manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)
+2. **SRA Toolkit**: To download RNA-seq data from SRA.
+   - [SRA Toolkit Documentation](https://github.com/ncbi/sra-tools)
+3. **FastQC**: For quality control of RNA-seq reads.
+   - [FastQC Website](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+4. **Samtools**: For sequence data manipulation.
+   - [Samtools Documentation](http://www.htslib.org/doc/)
+5. **Subread/FeatureCounts**: For gene-level quantification.
+   - [Subread User Manual](http://bioinf.wehi.edu.au/subread-package/)
+6. **R and RStudio**: For differential expression analysis and visualization.
+   - [R Project](https://www.r-project.org/)
+   - [RStudio Website](https://posit.co/downloads/)
 
+---
 ## **Dataset Description**
 The dataset comes from the **NCBI BioProject PRJNA615032**, which includes RNA-seq data for human cell lines:
 - **Mock-infected cells**:
