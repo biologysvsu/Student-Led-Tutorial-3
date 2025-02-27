@@ -67,7 +67,7 @@ Source: Ensembl GRCh38 human genome: (https://ftp.ensembl.org/pub/release-110/fa
 ### **Part 2: Align Reads with STAR**
 1. Align each sample (mock or COVID-infected) to the genome:
    ```bash
-   STAR --genomeDir star_index --readFilesIn SRR11412215_1.fastq SRR11412215_2.fastq \
+   STAR --genomeDir star_index --readFilesIn SRR11412215.fastq\
    --outFileNamePrefix mock_rep1_ --outSAMtype BAM SortedByCoordinate
 - Replace SRR11412215 with the appropriate sample name for each replicate.
 2. Output files for each sample:
