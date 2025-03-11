@@ -60,7 +60,11 @@ or
 Source: Ensembl GRCh38 human genome: (https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/).
 - FASTA: Download FASTA file
 - GTF: Download GTF file
-3. Generate the STAR genome index:
+3. Load STAR on the HPC
+  ```
+  module load STAR
+  ```
+4. Generate the STAR genome index:
    ```bash
    STAR --runMode genomeGenerate --genomeDir star_index \
     --genomeFastaFiles reference.fasta --sjdbGTFfile annotation.gtf --sjdbOverhang 100
