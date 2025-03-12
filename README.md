@@ -57,17 +57,44 @@ or
         Mock-infected: SRR11412215 to SRR11412218.
         COVID-19-infected: SRR11412227 to SRR11412231.
 2. Download the reference genome (FASTA) and annotation file (GTF):
-Source: Ensembl GRCh38 human genome: (https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/).
-- FASTA: Download FASTA file
-- GTF: Download GTF file
+Source: Ensembl GRCh38 human genome:
+- FASTA: Download FASTA file:
+```
+# Download the fasta file
+wget https://ftp.ensembl.org/pub/release-113/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+
+# Unzip the file
+gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+
+# Rename it to reference.fasta
+mv Homo_sapiens.GRCh38.dna.primary_assembly.fa reference.fasta
+```
+
+- GTF: Download GTF file:
+```
+# Download the GTF file
+wget https://ftp.ensembl.org/pub/release-113/gtf/homo_sapiens/Homo_sapiens.GRCh38.113.gtf.gz
+
+# Unzip the GTF file
+gunzip Homo_sapiens.GRCh38.113.gtf.gz
+
+# Rename it to annotation.gtf
+mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
+```
+
 3. Load STAR on the HPC
   ```
   module load STAR
   ```
-4. Generate the STAR genome index:
+4. Run an interactive session requesting high memory resources
+```
+salloc --mem=20G --time=3:00:00 --cpus-per-task=8
+```
+6. Generate the STAR genome index (You may want to share the index files with us, eg.: upload them to repository, that will save us a lot of tutorial time):
    ```bash
    STAR --runMode genomeGenerate --genomeDir star_index \
     --genomeFastaFiles reference.fasta --sjdbGTFfile annotation.gtf --sjdbOverhang 100
+
 ### **Part 2: Align Reads with STAR**
 1. Align each sample (mock or COVID-infected) to the genome:
    ```bash
