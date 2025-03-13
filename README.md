@@ -86,7 +86,7 @@ mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
   ```
   module load STAR
   ```
-4. Run an interactive session requesting high memory resources
+4. **(OPTIONAL)** Run an interactive session requesting high memory resources
 ```
 salloc --mem=50G --time=4:00:00 --cpus-per-task=16
 ```
