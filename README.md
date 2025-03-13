@@ -90,11 +90,14 @@ mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
 ```
 salloc --mem=50G --time=4:00:00 --cpus-per-task=16
 ```
-6. Generate the STAR genome index (You may want to share the index files with us, eg.: upload them to repository, that will save us a lot of tutorial time):
+6. **(OPTIONAL)** Generate the STAR genome index (This step requires 3 hours to complete in 16 cpus with total RAM of 50 Gigabytes):
    ```bash
    STAR --runMode genomeGenerate --genomeDir star_index \
     --genomeFastaFiles reference.fasta --sjdbGTFfile annotation.gtf --sjdbOverhang 100
-
+7. Create a symlink to copy index files to your current directory
+```
+ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_7_data/star_index .
+```
 ### **Part 2: Align Reads with STAR**
 1. Align each sample (mock or COVID-infected) to the genome:
    ```bash
