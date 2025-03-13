@@ -88,7 +88,7 @@ mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
   ```
 4. Run an interactive session requesting high memory resources
 ```
-salloc --mem=20G --time=3:00:00 --cpus-per-task=8
+salloc --mem=50G --time=4:00:00 --cpus-per-task=16
 ```
 6. Generate the STAR genome index (You may want to share the index files with us, eg.: upload them to repository, that will save us a lot of tutorial time):
    ```bash
