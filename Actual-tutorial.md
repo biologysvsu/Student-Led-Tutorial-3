@@ -2,8 +2,7 @@
 ## Download BEFORE Class
 ### Download R and RStudio
 ``` bash
-	https://www.r-project.org/
-<img width="348" alt="image" src="https://github.com/user-attachments/assets/20c806fd-46b5-431a-a1d7-6084a10edc90" />
+  - [R Project](https://www.r-project.org/)
 ```
 #### steps to download: Under Download header > CRAN > 0-Cloud > download for your computer type (should be a .pkg file) > install > open R and R Studio
 
