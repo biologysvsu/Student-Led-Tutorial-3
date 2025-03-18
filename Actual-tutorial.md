@@ -2,6 +2,7 @@
 ## Download BEFORE Class
 ### Download R and RStudio
   - [R Project](https://www.r-project.org/)
+  - - [STAR Manual (https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)
 
 
 #### Steps to download: Under Download header > CRAN > 0-Cloud > download for your computer type (should be a .pkg file) > install > open R and R Studio
