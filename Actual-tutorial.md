@@ -3,7 +3,7 @@
 ### Download R and RStudio
   - [R Project](https://www.r-project.org/)
 
-bash ```
+
 #### steps to download: Under Download header > CRAN > 0-Cloud > download for your computer type (should be a .pkg file) > install > open R and R Studio
 
 # Student-Led-Tutorial-3
