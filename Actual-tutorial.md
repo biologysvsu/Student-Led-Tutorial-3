@@ -1,12 +1,12 @@
 # Actual tutorial
-## m
-
-### n
-#### w
-
+## Download BEFORE Class
+### Download R and RStudio
 ``` bash
-cp /ocean/ .
+	https://www.r-project.org/
+<img width="348" alt="image" src="https://github.com/user-attachments/assets/20c806fd-46b5-431a-a1d7-6084a10edc90" />
 ```
+#### steps to download: Under Download header > CRAN > 0-Cloud > download for your computer type (should be a .pkg file) > install > open R and R Studio
+
 # Student-Led-Tutorial-3
 # Task: Tutorial for Gene Expression Analysis Using STAR, Gene Expression Quantification, and Differential Expression Analysis
 # Date: March 20th
