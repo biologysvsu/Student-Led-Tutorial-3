@@ -80,10 +80,10 @@ mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
   ```bash
 nano star_indexing.sbatch 
   ```
-- The `vi` editor can be used here as well.
+The `vi` editor can be used here as well.
 
   #### Paste:
-  ```bash
+```bash
 #!/bin/bash 
 #SBATCH --job-name=star_indexing 
 #SBATCH --output=star_indexing.out 
@@ -94,7 +94,7 @@ nano star_indexing.sbatch
 #SBATCH --mem=100G 
 #SBATCH --mail-user=YOUR EMAIL 
 #SBATCH --mail-type=ALL 
-  ```
+```
 
 ### Step 2: Load STAR
   ```bash
