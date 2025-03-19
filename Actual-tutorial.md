@@ -80,6 +80,7 @@ mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
   ```bash
 nano star_indexing.sbatch 
   ```
+- The `vi` editor can be used here as well
 
   #### Paste:
   ```bash
