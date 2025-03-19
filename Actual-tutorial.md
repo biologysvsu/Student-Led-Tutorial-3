@@ -18,12 +18,26 @@ Students will:
 5. Visualize results such as heatmaps and volcano plots to highlight key differentially expressed genes.
 
 ---
-# Load Modules
-
-  ``` bash
-  module load anaconda3/2024.10-1
-  conda activate bioinfo-env
-  module load STAR
----
-# Run STAR genome indexing
+## Load Modules
+```bash
+module load anaconda3/2024.10-1
+conda activate bioinfo-env
+module load STAR
+```
+## Run STAR Genome Indexing
+```bash
+STAR --runMode genomeGenerate --genomeDir /path/to/genome --genomeFastaFiles /path/to/genome.fasta --sjdbGTFfile /path/to/annotation.gtf --runThreadN 8
+```
+### You now should have a STAR index
+- To check:
+  ```bash
+  ls -lh STAR_index
+  ```
+  ## Create STAR Alignment Script
+  ```bash
+  nano star_alignment.sbatch
+  ```
+  ### Paste the following content into "star_alignment.sbatch'
+  
+  
   
