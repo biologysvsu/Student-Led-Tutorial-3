@@ -42,13 +42,16 @@ Use the SRA Toolkit (must be installed beforehand if run locally, otherwise avai
 
    ``` bash
    # Example for a mock-infected sample. More replicates are always better, so repeat step for each SRA    accession.
-   fastq-dump SRR11412215
+
+prefetch --max-size 100G SRR11412215 #Handles large files efficiently (downloads in chunks to avoid corruption) 
+fastq-dump --gzip SRR11412215
 ```
 or
 
    ``` bash
    # Example for a COVID-19-infected sample. More replicates are always better, so repeat step for each SRA accession.
-   fastq-dump SRR11412227
+prefetch --max-size 100G SRR11412227
+fastq-dump --gzip SRR11412227
 ```
 
 ## **Tasks and Deliverables**
@@ -99,12 +102,17 @@ salloc --mem=50G --time=4:00:00 --cpus-per-task=16
 ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_7_data/star_index .
 ```
 ### **Part 2: Align Reads with STAR**
-1. Align each sample (mock or COVID-infected) to the genome:
+1. Open an interactive session to run this alignment
+
+2. Align each sample (mock or COVID-infected) to the genome:
    ```bash
-   STAR --genomeDir star_index --readFilesIn SRR11412215.fastq\
-   --outFileNamePrefix mock_rep1_ --outSAMtype BAM SortedByCoordinate
+STAR --genomeDir star_index \
+     --readFilesIn SRR11412215.fastq \
+     --outFileNamePrefix mock_rep1_ \
+     --runThreadN 8 \
+     --outSAMtype BAM SortedByCoordinate
 - Replace SRR11412215 with the appropriate sample name for each replicate.
-2. Output files for each sample:
+3. Output files for each sample:
 - Sorted BAM file (e.g., `mock_rep1_Aligned.sortedByCoord.out.bam`).
 - Alignment log file (e.g., `mock_rep1_Log.final.out`).
 
