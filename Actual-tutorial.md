@@ -20,8 +20,8 @@ Students will:
 ---
 # Load Modules
 
-  ''' bash
-    module load anaconda3/2024.10-1 
-    conda activate bioinfo-env
-    module load STAR
+  ``` bash
+  module load anaconda3/2024.10-1
+  conda activate bioinfo-env
+  module load STAR 
   '''
