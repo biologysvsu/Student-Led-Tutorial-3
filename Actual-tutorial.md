@@ -20,16 +20,16 @@ Students will:
 4. Perform differential expression analysis between mock-infected and COVID-19-infected cells using **DESeq2** (or equivalent).
 5. Visualize results such as heatmaps and volcano plots to highlight key differentially expressed genes.
 ---
-**Part 1: Setup & Environment Preparation**
+#**Part 1: Setup & Environment Preparation**
 
-## Step 1: Navigate to the shared directory and create a new  working directory for this tutorial:
+### Step 1: Navigate to the shared directory and create a new  working directory for this tutorial:
   ```bash
   cd /ocean/projects/agr250001p/shared/ 
   mkdir Tutorial-3 
   cd Tutorial-3
   ```
 
-## Step 2: Load anaconda and create bioinformatics environment
+### Step 2: Load anaconda and create bioinformatics environment
 ```bash
 module load anaconda3/2024.10-1
 conda create --name bioinfo-env python=3.9 -y 
@@ -37,23 +37,23 @@ conda activate bioinfo-env
 conda install -c bioconda star subread fastqc samtools -y
 ```
 
-**Part 2: Data Prepatration**
+#**Part 2: Data Prepatration**
 
-## Step 1: Download FASTQ Files
+### Step 1: Download FASTQ Files
 
-  ### We already extracted these for you. If needed, verify:
+  #### We already extracted these for you. If needed, verify:
   ```bash
   ls -lh *.fastq
   ```
 
-## Step 2: Download Necessary Files
+### Step 2: Download Necessary Files
 
-## Download the Reference Genome
+### Download the Reference Genome
   ```bash
   wget https://ftp.ensembl.org/pub/release-113/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz 
   ```
 
-### Gunzip the 'Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz' file
+#### Gunzip the 'Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz' file
   ```bash
 gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz 
   ```
