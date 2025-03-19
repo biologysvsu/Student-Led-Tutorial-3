@@ -166,14 +166,14 @@ library(pheatmap)
   - Set the working directory or use file.choose() to select the count file:
 ```bash
     # Set working directory if needed 
-setwd("C:/Users/19897/Desktop/") 
+setwd(YOUR DOWNLOADS FOLDER) 
  
 # Verify file exists 
 file.exists("counts.txt")  # Should return TRUE 
 ```
 ### Step 5: Read and Load count data from the file:
   ```bash
-counts <- read.table("C:/Users/19897/Desktop/counts.txt", 
+counts <- read.table("YOUR DOWNLOADS FOLDER  ", 
                      header=TRUE, 
                      row.names=1, 
                      sep="\t", 
