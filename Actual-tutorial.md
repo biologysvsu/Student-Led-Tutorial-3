@@ -37,7 +37,7 @@ conda activate bioinfo-env
 conda install -c bioconda star subread fastqc samtools -y
 ```
 
-#**Part 2: Data Prepatration**
+# Part 2: Data Prepatration**
 
 ### Step 1: Download FASTQ Files
 
@@ -46,7 +46,7 @@ conda install -c bioconda star subread fastqc samtools -y
   ls -lh *.fastq
   ```
 
-### Step 2: Download Necessary Files
+## Step 2: Download Necessary Files
 
 ### Download the Reference Genome
   ```bash
@@ -58,12 +58,12 @@ conda install -c bioconda star subread fastqc samtools -y
 gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz 
   ```
 
-## Download the Annotation File 
+### Download the Annotation File 
   ```bash
 wget https://ftp.ensembl.org/pub/release-113/gtf/homo_sapiens/Homo_sapiens.GRCh38.113.gtf.gz
   ```
 
-### Gunzip the 'Homo_sapiens.GRCh38.113.gtf.gz' file
+#### Gunzip the 'Homo_sapiens.GRCh38.113.gtf.gz' file
   ```bash
 gunzip Homo_sapiens.GRCh38.113.gtf.gz
   ```
@@ -73,15 +73,15 @@ gunzip Homo_sapiens.GRCh38.113.gtf.gz
 mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
   ```
 
-**Part 3: STAR Genome Indexing**
+# Part 3: STAR Genome Indexing
 
-## Step 1: Create STAR Indexing Script
-  ### Run:
+### Step 1: Create STAR Indexing Script
+  #### Run:
   ```bash
 nano star_indexing.sbatch 
   ```
 
-  ### Paste:
+  #### Paste:
   ```bash
 #!/bin/bash 
 #SBATCH --job-name=star_indexing 
@@ -95,11 +95,11 @@ nano star_indexing.sbatch
 #SBATCH --mail-type=ALL 
   ```
 
-## Step 2: Load STAR
+### Step 2: Load STAR
   ```bash
 module load STAR 
   ```
-  ### Run:
+  #### Run:
   ```bash
   STAR --runMode genomeGenerate \ 
      --genomeDir star_index \ 
@@ -114,27 +114,27 @@ module load STAR
   ls -lh STAR_index
   ```
 
-## Step 3: Submit STAR Indexing Job
+### Step 3: Submit STAR Indexing Job
 ```bash
 sbatch star_indexing.sbatch
  ```
 
-## Step 4: Verify Indexing Output
+### Step 4: Verify Indexing Output
   ```bash
 ## Create STAR Alignment Script
   ```bash
   nano star_alignment.sbatch
   ```
 
-## Step 5: Create Symlink to Shared STAR Index
+### Step 5: Create Symlink to Shared STAR Index
 - If STAR indexing has already been generated in a shared directory, create a symlink instead:  
   ```bash
   ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_7_data/star_index . 
   ```
   
-**Part 4: Read Alignment with STAR**
+# Part 4: Read Alignment with STAR
 
-## Step 1: Align reads to the Genome
+### Step 1: Align reads to the Genome
   ### For each sample (mock or COVID-infected), align reads to the genome:
   ```bash
   STAR --genomeDir star_index \ 
@@ -142,15 +142,15 @@ sbatch star_indexing.sbatch
      --outFileNamePrefix mock_rep1_ \ 
      --outSAMtype BAM SortedByCoordinate  
   ```
-  ### Replace 'SRR11412215' with the appropriate sample name for each replicate
+  #### Replace 'SRR11412215' with the appropriate sample name for each replicate
   
-## Step 2: Expected Output Files
-  ### Each Sample should generate:
+### Step 2: Expected Output Files
+  #### Each Sample should generate:
   - Sorted BAM file: mock_rep1_Aligned.sortedByCoord.out.bam 
   - Alignment log file: mock_rep1_Log.final.out
    
-## Step 3: Setup and Load Required Libraries
-### Ensure that all required packages are installed and loaded:
+### Step 3: Setup and Load Required Libraries
+#### Ensure that all required packages are installed and loaded:
 ```bash
 # Install Bioconductor and DESeq2 if not installed 
 if (!requireNamespace("BiocManager", quietly = TRUE)) 
@@ -162,7 +162,7 @@ library(DESeq2)
 library(ggplot2) 
 library(pheatmap) 
   ```
-## Step 4: Load and Prepared Count Data
+### Step 4: Load and Prepared Count Data
   - Verify File location
   - Set the working directory or use file.choose() to select the count file:
 ```bash
@@ -172,8 +172,7 @@ setwd("C:/Users/19897/Desktop/")
 # Verify file exists 
 file.exists("counts.txt")  # Should return TRUE 
 ```
-## Step 5: Read Count Data
-## Load count data from the file:
+### Step 5: Read and Load count data from the file:
   ```bash
 counts <- read.table("C:/Users/19897/Desktop/counts.txt", 
                      header=TRUE, 
@@ -181,11 +180,11 @@ counts <- read.table("C:/Users/19897/Desktop/counts.txt",
                      sep="\t", 
                      check.names=FALSE)
   ```
-## Remove metadata Columns (Chr, Start, End, Strand, Length) 
+### Remove metadata Columns (Chr, Start, End, Strand, Length) 
   ```bash
 counts <- counts[, -(1:5)]
   ```
-## Verify data structure
+### Verify data structure
 - 'dim(counts)' checks dimensions (genes, samples)
 - 'colnames(counts)' ensures only sample names remain
 ```bash
@@ -194,45 +193,45 @@ dim(counts)   
 ```bash
 colnames(counts)   
 ```
-**Part 5: Create Sample Metadata**
-## Define experimental conditions for each sample: 
+# Part 5: Create Sample Metadata
+### Define experimental conditions for each sample: 
   ```bash
 coldata <- data.frame( 
   condition = c(rep("mock", 4), rep("covid", 5)),  # Adjust sample numbers if needed 
   replicate = c(1:4, 1:5)  )  
   ```
-## Assign sample names
+### Assign sample names
 ```bash
 rownames(coldata) <- colnames(counts)
 ```
-## Check that row names match column names (Response should say: TRUE)
+### Check that row names match column names (Response should say: TRUE)
 ```bash
 all(rownames(coldata) == colnames(counts))
 ```
-**Part 6: Differential Expression Analysis with DESeq2**
-## Create DESeq2 dataset
+# Part 6: Differential Expression Analysis with DESeq2
+### Create DESeq2 dataset
 ```bash
 dds <- DESeqDataSetFromMatrix(countData=counts, colData=coldata, design=~condition)
 ```
-## Run DESeq2 differential expression analysis
+### Run DESeq2 differential expression analysis
 ```bash
 dds <- DESeq(dds)
 ```
-## Get results
+### Get results
 ```bash
 results <- results(dds
 ```
-## Save results to CSV
+### Save results to CSV
 ```bash
 write.csv(as.data.frame(results), "differential_expression_results.csv")
 ```
-**Part 7: Visualize Results**
-## Step 1: Volcano Plot
+# Part 7: Visualize Results
+### Step 1: Volcano Plot
   - Identify Significant genes
 ```bash
 results$significant <- !is.na(results$padj) & results$padj < 0.05 & abs(results$log2FoldChange) > 1
 ```
-## Step 2: Generate Volcano Plot
+### Step 2: Generate Volcano Plot
 ```bash
 ggplot(results, aes(x=log2FoldChange, y=-log10(padj), color=significant)) + 
   geom_point(alpha=0.7) + 
@@ -240,18 +239,16 @@ ggplot(results, aes(x=log2FoldChange, y=-log10(padj), color=significant)) +
   scale_color_manual(values=c("gray", "red")) + 
   labs(title="Volcano Plot", x="Log2 Fold Change", y="-log10 Adjusted p-value")
 ```
-## Step 3: Select the top 50 genes based on adjusted p-value
+### Step 3: Select the top 50 genes based on adjusted p-value
 ```bash
 library(pheatmap) 
 top_genes <- rownames(results)[order(results$padj, na.last=NA)][1:50]
 ```
-## Step 4: Normalize couns for heatmap visualization
+### Step 4: Normalize couns for heatmap visualization
 ```bash
 normalized_counts <- counts(dds, normalized=TRUE)
 ```
-## Step 5: Generate heatmap
+### Step 5: Generate heatmap
 ```bash
 pheatmap(normalized_counts[top_genes, ], cluster_rows=TRUE, cluster_cols=TRUE, scale="row")
 ```
-
-#**The End**
