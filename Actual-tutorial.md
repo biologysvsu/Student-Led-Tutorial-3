@@ -68,7 +68,7 @@ wget https://ftp.ensembl.org/pub/release-113/gtf/homo_sapiens/Homo_sapiens.GRCh3
 gunzip Homo_sapiens.GRCh38.113.gtf.gz
   ```
 
-## Move the 'Homo_sapiens.GRCh38.113.gtf' file into the 'annotation.gtf' file
+### Move the 'Homo_sapiens.GRCh38.113.gtf' file into the 'annotation.gtf' file
  ```bash
 mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
   ```
