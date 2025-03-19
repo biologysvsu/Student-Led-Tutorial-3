@@ -112,7 +112,7 @@ module load STAR
 ### You now should have a STAR index
 - To check:
   ```bash
-  ls -lh STAR_index
+  ls -lh star_index
   ```
 
 ### Step 3: Submit STAR Indexing Job
