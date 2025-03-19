@@ -36,7 +36,7 @@ conda create --name bioinfo-env python=3.9 -y
 conda activate bioinfo-env 
 conda install -c bioconda star subread fastqc samtools -y
 ```
-
+Deactivate conda
 # Part 2: Data Prepatration**
 
 ### Step 1: Download FASTQ Files
