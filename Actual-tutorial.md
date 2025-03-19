@@ -20,7 +20,7 @@ Students will:
 4. Perform differential expression analysis between mock-infected and COVID-19-infected cells using **DESeq2** (or equivalent).
 5. Visualize results such as heatmaps and volcano plots to highlight key differentially expressed genes.
 ---
-#**Part 1: Setup & Environment Preparation**
+# Part 1: Setup & Environment Preparation
 
 ### Step 1: Navigate to the shared directory and create a new  working directory for this tutorial:
   ```bash
