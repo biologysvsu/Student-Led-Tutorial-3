@@ -33,11 +33,19 @@ STAR --runMode genomeGenerate --genomeDir /path/to/genome --genomeFastaFiles /pa
   ```bash
   ls -lh STAR_index
   ```
-  ## Create STAR Alignment Script
+## Create STAR Alignment Script
   ```bash
   nano star_alignment.sbatch
   ```
-  ### Paste the following content into "star_alignment.sbatch'
-  
-  
+### Paste the following content into "star_alignment.sbatch':
+  ```bash
+#!/bin/bash #SBATCH --job-name=STAR_alignment #SBATCH --output=star_alignment.out #SBATCH --error=star_alignment.err #SBATCH --mem=50G #SBATCH --time=4:00:00 #SBATCH --cpus-per-task=16 #SBATCH --mail-type=END,FAIL #SBATCH --mail-user=jrander3@svsu.edu # Change to your email 
+
+module load STAR 
+
+for file in SRR11412215.fastq.gz SRR11412216.fastq.gz SRR11412217.fastq.gz SRR11412218.fastq.gz  
+
+SRR11412227.fastq.gz SRR11412228.fastq.gz SRR11412229.fastq.gz SRR11412230.fastq.gz SRR11412231.fastq.gz do STAR --genomeDir star_index
+  ```
+### You have now completed a STAR alignment for the Mock infected cells and
   
