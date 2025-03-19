@@ -91,7 +91,7 @@ nano star_indexing.sbatch
 #SBATCH --ntasks=1 
 #SBATCH --cpus-per-task=16 
 #SBATCH --mem=100G 
-#SBATCH --mail-user=jrander3@svsu.edu 
+#SBATCH --mail-user=YOUR EMAIL 
 #SBATCH --mail-type=ALL 
   ```
 
