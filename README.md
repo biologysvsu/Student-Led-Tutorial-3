@@ -105,12 +105,13 @@ ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_7_data/star_index
 1. Open an interactive session to run this alignment
 
 2. Align each sample (mock or COVID-infected) to the genome:
-   ```bash
+```bash
 STAR --genomeDir star_index \
      --readFilesIn SRR11412215.fastq \
      --outFileNamePrefix mock_rep1_ \
      --runThreadN 8 \
      --outSAMtype BAM SortedByCoordinate
+```
 - Replace SRR11412215 with the appropriate sample name for each replicate.
 3. Output files for each sample:
 - Sorted BAM file (e.g., `mock_rep1_Aligned.sortedByCoord.out.bam`).
