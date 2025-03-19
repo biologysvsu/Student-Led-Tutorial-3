@@ -121,8 +121,6 @@ sbatch star_indexing.sbatch
 
 ### Step 4: Verify Indexing Output
   ```bash
-## Create STAR Alignment Script
-  ```bash
   nano star_alignment.sbatch
   ```
 
