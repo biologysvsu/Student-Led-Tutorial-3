@@ -110,23 +110,7 @@ The `vi` editor can be used here as well.
 #SBATCH --mail-user=YOUR EMAIL 
 #SBATCH --mail-type=ALL 
 ```
-
-### Step 2: Load STAR
-  ```bash
-module load STAR 
-  ```
-  #### Run:
-  ```bash
-  STAR --runMode genomeGenerate \ 
-     --genomeDir star_index \ 
-     --genomeFastaFiles Homo_sapiens.GRCh38.dna.primary_assembly.fa \ 
-     --sjdbGTFfile annotation.gtf \ 
-     --sjdbOverhang 100 \ 
-     --runThreadN 16
-  ```
-- Exit the nano editor with `Ctrl X`
-- 
-### Step 3: Submit STAR Indexing Job
+### Step 2: Submit STAR Indexing Job
 ```bash
 sbatch star_indexing.sbatch
  ```
@@ -137,7 +121,7 @@ sbatch star_indexing.sbatch
   ls -lh star_index
   ```
 
-# Part 4: Read Alignment with STAR
+# Part 2: Read Alignment with STAR
 ```
 salloc --nodes=1 --ntasks=1 --cpus-per-task=16 --mem=64G --time=03:00:00 --partition=RM
 ```
