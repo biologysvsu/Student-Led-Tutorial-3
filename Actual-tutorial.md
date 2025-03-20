@@ -21,7 +21,7 @@ Students will:
 5. Visualize results such as heatmaps and volcano plots to highlight key differentially expressed genes.
 ---
 
-#PLEASE DO NOT START THE TUTORIAL, DUE TO ISSUES WITH FILE SHARING YOU WILL WATCH THE FIRST 4 PARTS
+# PLEASE DO NOT START THE TUTORIAL, DUE TO ISSUES WITH FILE SHARING YOU WILL WATCH THE FIRST 4 PARTS
 
 # Part 1: Setup & Environment Preparation
 
