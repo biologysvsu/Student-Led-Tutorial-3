@@ -204,7 +204,7 @@ conda activate bioinfo
 cd ..
 ```
 ```bash
-   featureCounts -a annotation.gtf -o counts.txt \
+   featureCounts -T 8 -a annotation.gtf -o counts.txt \
    mock/mock_rep1_Aligned.sortedByCoord.out.bam \
    mock/mock_rep2_Aligned.sortedByCoord.out.bam \
    mock/mock_rep3_Aligned.sortedByCoord.out.bam \
@@ -219,7 +219,10 @@ cd ..
 
 2. Output file:
 - `counts.txt`: Contains gene-level counts for all samples.
-
+- Explore the `counts.txt.summary` file
+```
+cat counts.txt.summary
+``` 
 ### **Part 4: Differential Expression Analysis**
 1. Use DESeq2 in R for differential expression analysis:
 - Load counts.txt and assign sample metadata:
