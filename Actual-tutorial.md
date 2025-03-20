@@ -246,7 +246,7 @@ file.exists("counts.txt")  # Should return TRUE
 ```
 ### Read and Load count data from the file:
   ```r
-counts <- read.table("YOUR DOWNLOADS FOLDER  ", 
+counts <- read.table("C:/Users/YOUR_USERNAME/Downloads/counts.txt", 
                      header=TRUE, 
                      row.names=1, 
                      sep="\t", 
