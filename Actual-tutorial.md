@@ -44,13 +44,17 @@ conda activate bioinfo-env
 conda install -c bioconda star subread fastqc samtools -y
 ```
 Deactivate conda
+```
+conda deactivate
+```
+
 # Part 2: Data Preparation
 
 ### Step 1: Download FASTQ Files
 
   #### We already extracted these for you. If needed, verify:
   ```bash
-  ls -lh *.fastq
+  ls -lh sra_data
   ```
 
 ## Step 2: Download Necessary Files
@@ -80,7 +84,7 @@ gunzip Homo_sapiens.GRCh38.113.gtf.gz
 mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
   ```
 
-# Part 3: STAR Genome Indexing
+# Part 3: STAR Genome Indexing (Demonstration Only, Students will run these lines)
 
 ### Step 1: Create STAR Indexing Script
   #### Run:
@@ -144,11 +148,13 @@ sbatch star_indexing.sbatch
   ### For each sample (mock or COVID-infected), align reads to the genome:
   ```bash
   STAR --genomeDir star_index \ 
-     --readFilesIn SRR11412215.fastq \ 
+     --readFilesIn sra_data/SRR11412215.fastq \ 
      --outFileNamePrefix mock_rep1_ \ 
      --outSAMtype BAM SortedByCoordinate  
   ```
   #### Replace `SRR11412215` with the appropriate sample name for each replicate
+  #### Replace 1 `mock_rep1_` with the appropriate number for each replicate
+
   
 ### Step 2: Expected Output Files
   #### Each Sample should generate:
