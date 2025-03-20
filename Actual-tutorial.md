@@ -91,7 +91,7 @@ gunzip Homo_sapiens.GRCh38.113.gtf.gz
 mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
   ```
 
-# Part 3: STAR Genome Indexing (Demonstration Only, Students will run these lines)
+# Part 3: STAR Genome Indexing
 
 ### Step 1: Create STAR Indexing Script
   #### Run:
@@ -113,7 +113,7 @@ The `vi` editor can be used here as well.
 #SBATCH --mail-user=YOUR EMAIL 
 #SBATCH --mail-type=ALL 
 ```
-### Step 2: Submit STAR Indexing Job
+### Submit STAR Indexing Job
 ```bash
 sbatch star_indexing.sbatch
  ```
@@ -124,37 +124,84 @@ sbatch star_indexing.sbatch
   ls -lh star_index
   ```
 
-# Part 2: Read Alignment with STAR
-```
-salloc --nodes=1 --ntasks=1 --cpus-per-task=16 --mem=64G --time=03:00:00 --partition=RM
-```
-```
-conda activate bioinfo-env 
-```
-### Step 1: Align reads to the Genome
-  ### For each sample (mock or COVID-infected), align reads to the genome:
-  ```bash
-  STAR --genomeDir star_index \ 
-     --readFilesIn sra_data/SRR11412215.fastq \ 
-     --outFileNamePrefix mock_rep1_ \
-     --runThreadN 8 \
-     --outSAMtype BAM SortedByCoordinate  
-  ```
-  #### Replace `SRR11412215` with the appropriate sample name for each replicate
-  #### Replace 1 `mock_rep1_` with the appropriate number for each replicate
-  #### Repeat for covid samples (?)
-  
-### Step 2: Expected Output Files
-  #### Each Sample should generate:
-  - Sorted BAM file: `mock_rep1_Aligned.sortedByCoord.out.bam`
-  - Alignment log file: `mock_rep1_Log.final.out`
+# Part 3: Read Alignment with STAR
 
-### Use FeatureCounts to count reads mapped to genes for all samples and replicates (if any) :
-featureCounts -a annotation.gtf -o counts.txt \
-  mock/mock_rep1_Aligned.sortedByCoord.out.bam \
-  covid/covid_rep1_Aligned.sortedByCoord.out.bam \
+Generate Alignment Script
+```bash
+nano star_alignment.sbatch
+```
+Paste, Change Email
+```bash
+#!/bin/bash
+#SBATCH --job-name=STAR_alignment
+#SBATCH --output=star_alignment.out
+#SBATCH --error=star_alignment.err
+#SBATCH --mem=100G
+#SBATCH --time=4:00:00
+#SBATCH --cpus-per-task=16
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=YOUR EMAIL
 
-### Step 3: Setup and Load Required Libraries
+# Load necessary modules
+module load anaconda3/2024.10-1
+conda activate bioinfo-env
+module load STAR
+
+# Run STAR alignment for each single-end read file
+for file in SRR11412215.fastq SRR11412216.fastq SRR11412217.fastq SRR11412218.fastq \
+            SRR11412227.fastq SRR11412228.fastq SRR11412229.fastq SRR11412230.fastq SRR11412231.fastq
+do
+    STAR --genomeDir star_index \
+         --readFilesIn $file \
+         --outFileNamePrefix star_output/${file%%.fastq}_ \
+         --outSAMtype BAM SortedByCoordinate
+done
+```
+Submit Job
+```bash
+sbatch star_alignment.sbatch
+```
+Verify BAM files exist
+```bash
+ls -lh star_output/
+samtools flagstat star_output/SRR11412215_Aligned.sortedByCoord.out.bam
+```
+Part 4: Create Counts File Using Subread
+
+Create Feature Counts Script:
+```bash
+nano featureCounts.sbatch
+```
+Paste:
+```bash
+#!/bin/bash
+#SBATCH --job-name=featureCounts
+#SBATCH --output=featureCounts.out
+#SBATCH --error=featureCounts.err
+#SBATCH --mem=32G
+#SBATCH --time=2:00:00
+#SBATCH --cpus-per-task=8
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=YOUR EMAIL
+
+# Load necessary modules
+module load anaconda3/2024.10-1
+conda activate bioinfo-env
+module load subread
+
+# Run featureCounts to quantify gene expression
+featureCounts -T 8 -a annotation.gtf -o counts.txt star_output/*.bam
+```
+Submit Job:
+```bash
+nano featureCounts.sbatch
+```
+Verify Output
+```bash
+ls -lh counts.txt
+head counts.txt
+```
+### Part 5 Analysis in R Studio: Setup and Load Required Libraries
 #### Ensure that all required packages are installed and loaded:
 ```bash
 # Install Bioconductor and DESeq2 if not installed 
@@ -167,7 +214,7 @@ library(DESeq2)
 library(ggplot2) 
 library(pheatmap) 
   ```
-### Step 4: Load and Prepared Count Data
+### Load and Prepared Count Data
   - Verify File location
   - Set the working directory or use file.choose() to select the count file:
 ```bash
@@ -177,7 +224,7 @@ setwd(YOUR DOWNLOADS FOLDER)
 # Verify file exists 
 file.exists("counts.txt")  # Should return TRUE 
 ```
-### Step 5: Read and Load count data from the file:
+### Read and Load count data from the file:
   ```bash
 counts <- read.table("YOUR DOWNLOADS FOLDER  ", 
                      header=TRUE, 
