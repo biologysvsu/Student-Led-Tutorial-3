@@ -138,24 +138,35 @@ sbatch star_indexing.sbatch
   ```
 
 # Part 4: Read Alignment with STAR
-
+```
+salloc --nodes=1 --ntasks=1 --cpus-per-task=16 --mem=64G --time=03:00:00 --partition=RM
+```
+```
+conda activate bioinfo-env 
+```
 ### Step 1: Align reads to the Genome
   ### For each sample (mock or COVID-infected), align reads to the genome:
   ```bash
   STAR --genomeDir star_index \ 
      --readFilesIn sra_data/SRR11412215.fastq \ 
-     --outFileNamePrefix mock_rep1_ \ 
+     --outFileNamePrefix mock_rep1_ \
+     --runThreadN 8 \
      --outSAMtype BAM SortedByCoordinate  
   ```
   #### Replace `SRR11412215` with the appropriate sample name for each replicate
   #### Replace 1 `mock_rep1_` with the appropriate number for each replicate
-
+  #### Repeat for covid samples (?)
   
 ### Step 2: Expected Output Files
   #### Each Sample should generate:
   - Sorted BAM file: `mock_rep1_Aligned.sortedByCoord.out.bam`
   - Alignment log file: `mock_rep1_Log.final.out`
-   
+
+### Use FeatureCounts to count reads mapped to genes for all samples and replicates (if any) :
+featureCounts -a annotation.gtf -o counts.txt \
+  mock/mock_rep1_Aligned.sortedByCoord.out.bam \
+  covid/covid_rep1_Aligned.sortedByCoord.out.bam \
+
 ### Step 3: Setup and Load Required Libraries
 #### Ensure that all required packages are installed and loaded:
 ```bash
