@@ -124,28 +124,19 @@ module load STAR
      --sjdbOverhang 100 \ 
      --runThreadN 16
   ```
-### You now should have a STAR index
-- To check:
-  ```bash
-  ls -lh star_index
-  ```
-  
+- Exit the nano editor with `Ctrl X`
+- 
 ### Step 3: Submit STAR Indexing Job
 ```bash
 sbatch star_indexing.sbatch
  ```
 
-### Step 4: Verify Indexing Output
+### You now should have a STAR index
+- To check:
   ```bash
-  nano star_alignment.sbatch
+  ls -lh star_index
   ```
 
-### Step 5: Create Symlink to Shared STAR Index
-- If STAR indexing has already been generated in a shared directory, create a symlink instead:  
-  ```bash
-  ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_7_data/star_index . 
-  ```
-  
 # Part 4: Read Alignment with STAR
 
 ### Step 1: Align reads to the Genome
