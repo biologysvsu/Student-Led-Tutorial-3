@@ -224,47 +224,99 @@ cd ..
 cat counts.txt.summary
 ``` 
 ### **Part 4: Differential Expression Analysis**
-1. Use DESeq2 in R for differential expression analysis:
-- Load counts.txt and assign sample metadata:
-   ```R
-   Library(DESeq2)
+1. Install R and RStudio
+2. Open RStudio
+3. Create and save new project
+4. Open new script.
+5. Copy, paste and run this script in R.
+```R
+###STUDENT LED TUTORIAL 3###
+###NAME: ______
+###DATE: ______
+###CONTACT: _________
 
-    # Load data
-    counts <- read.table("counts.txt", header=TRUE, row.names=1)
-    coldata <- data.frame(
-      condition = c(rep("mock", 2), rep("covid", 2)), # Adjust # of reps if needed
-      replicate = c(1:2, 1:2)
-    )
-    rownames(coldata) <- colnames(counts)[-c(1:6)]  # Adjust if needed
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("DESeq2")
+library(DESeq2)
 
-    # Create DESeq2 dataset
-    dds <- DESeqDataSetFromMatrix(countData=counts, colData=coldata, design=~condition)
+# Load data
+counts <- read.table("counts.txt", header=TRUE, row.names=1, sep="\t")
+counts <- counts[, -(1:5)]  # Now only sample columns remain
 
-    # Perform differential expression
-    dds <- DESeq(dds)
-    results <- results(dds)
-    write.csv(results, "differential_expression_results.csv")
-2. Identify differentially expressed genes:
+coldata <- data.frame(
+  condition = factor(c(rep("mock", 4), rep("covid", 5))),  # Convert to factor
+  replicate = c(1:4, 1:5)
+)
 
-- Filter by adjusted p-value and log2 fold-change (e.g., p.adj < 0.05 and |log2FC| > 1).
+rownames(coldata) <- colnames(counts)
 
-### **Part 5: Data Visualization**
+# Check if dimensions match
+if (ncol(counts) != nrow(coldata)) {
+  stop("Error: counts and coldata dimensions do not match!")
+}
 
-1. Volcano Plot:
-- Highlight significant genes:
-   ```R
-   library(ggplot2)
-results$significant <- results$padj < 0.05 & abs(results$log2FoldChange) > 1
-ggplot(results, aes(x=log2FoldChange, y=-log10(padj), color=significant)) +
-  geom_point() + theme_minimal() +
-  scale_color_manual(values=c("gray", "red"))
-2. Heatmap of Gene Expression:
-- Generate a heatmap for top 50 differentially expressed genes:
-   ```R
-   library(pheatmap)
-top_genes <- head(order(results$padj), 50)
-normalized_counts <- counts(dds, normalized=TRUE)
-pheatmap(normalized_counts[top_genes, ])
+# Create DESeq2 dataset
+dds <- DESeqDataSetFromMatrix(countData=counts, colData=coldata, design=~condition)
 
-### **Optional: Use IGV to visualize mapped reads**:
-- Load the BAM file and gene annotation to check alignment coverage.
+# Run DESeq2 analysis
+dds <- DESeq(dds)
+
+# Get and save results
+results <- results(dds)
+
+# Remove NA values
+results <- na.omit(results)
+
+# Save results to CSV
+write.csv(results, "differential_expression_results.csv")
+
+# View results structure
+head(results)
+
+#Create Volcano Plot
+library(ggplot2)
+
+# Define thresholds for significance
+padj_threshold <- 0.05  # Adjusted p-value cutoff
+lfc_threshold <- 1       # Log2 fold change cutoff
+
+# Add significance categories
+results$significance <- "Not Significant"
+results$significance[results$padj < padj_threshold & results$log2FoldChange > lfc_threshold] <- "Upregulated"
+results$significance[results$padj < padj_threshold & results$log2FoldChange < -lfc_threshold] <- "Downregulated"
+
+# Create the volcano plot
+ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance)) +
+  geom_point(alpha = 0.6) +
+  scale_color_manual(values = c("Not Significant" = "gray", "Upregulated" = "red", "Downregulated" = "blue")) +
+  theme_minimal() +
+  labs(title = "Volcano Plot of Differential Expression",
+       x = "Log2 Fold Change",
+       y = "-log10 Adjusted P-value") +
+  theme(legend.position = "top")
+
+ggsave("volcano_plot.png", width = 8, height = 6, dpi = 300)
+
+#Check the Number of Upregulated vs. Downregulated Genes
+table(results$significance)
+
+#Add gene accessions to graph
+install.packages("ggrepel")
+library(ggrepel)
+
+# Filter significant genes
+top_genes <- subset(results, padj < 0.05 & abs(log2FoldChange) > 1)
+
+ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance)) +
+  geom_point(alpha = 0.6) +
+  geom_text_repel(data = top_genes, aes(label = rownames(top_genes)), size = 3) +  # Add gene labels
+  scale_color_manual(values = c("Not Significant" = "gray", "Upregulated" = "red", "Downregulated" = "blue")) +
+  theme_minimal() +
+  labs(title = "Volcano Plot of Differential Expression",
+       x = "Log2 Fold Change",
+       y = "-log10 Adjusted P-value") +
+  theme(legend.position = "top")
+#Call top differentially expressed genes
+top_genes
+```
