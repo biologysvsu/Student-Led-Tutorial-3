@@ -99,32 +99,121 @@ salloc --mem=50G --time=4:00:00 --cpus-per-task=16
     --genomeFastaFiles reference.fasta --sjdbGTFfile annotation.gtf --sjdbOverhang 100
 7. Create a symlink to copy index files to your current directory
 ```
-ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_7_data/star_index .
+ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_3_data/star_index .
+ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_3_data/sra_data .
+
 ```
 ### **Part 2: Align Reads with STAR**
 1. Open an interactive session to run this alignment
-
-2. Align each sample (mock or COVID-infected) to the genome:
+```
+salloc --nodes=1 --ntasks=1 --cpus-per-task=16 --mem=64G --time=03:00:00 --partition=RM
+```
+2. Align each sample (mock ) to the genome:
 ```bash
-STAR --genomeDir star_index \
-     --readFilesIn SRR11412215.fastq \
-     --outFileNamePrefix mock_rep1_ \
+mkdir mock
+cd mock
+
+STAR --genomeDir ../star_index \
+     --readFilesIn ../sra_data/SRR11412218.fastq \
+     --outFileNamePrefix mock_rep4_ \
      --runThreadN 8 \
      --outSAMtype BAM SortedByCoordinate
 ```
-- Replace SRR11412215 with the appropriate sample name for each replicate.
+- Replace SRR11412215 with the appropriate sample name for each replicate (4).
+```
+STAR --genomeDir ../star_index \
+     --readFilesIn ../sra_data/SRR11412216.fastq \
+     --outFileNamePrefix mock_rep2_ \
+     --runThreadN 8 \
+     --outSAMtype BAM SortedByCoordinate
+```
+```
+STAR --genomeDir ../star_index \
+     --readFilesIn ../sra_data/SRR11412217.fastq \
+     --outFileNamePrefix mock_rep3_ \
+     --runThreadN 8 \
+     --outSAMtype BAM SortedByCoordinate
+```
+```
+STAR --genomeDir ../star_index \
+     --readFilesIn ../sra_data/SRR11412218.fastq \
+     --outFileNamePrefix mock_rep4_ \
+     --runThreadN 8 \
+     --outSAMtype BAM SortedByCoordinate
+```
+2. Repeat with COVID-infected samples:
+```bash
+cd ..
+mkdir covid
+cd covid
+
+STAR --genomeDir ../star_index \
+     --readFilesIn ../sra_data/SRR11412231.fastq \
+     --outFileNamePrefix covid_rep5_ \
+     --runThreadN 8 \
+     --outSAMtype BAM SortedByCoordinate
+```
+- Replace SRR11412227 with the appropriate sample name for each replicate (5).
+```
+STAR --genomeDir ../star_index \
+     --readFilesIn ../sra_data/SRR11412228.fastq \
+     --outFileNamePrefix covid_rep2_ \
+     --runThreadN 8 \
+     --outSAMtype BAM SortedByCoordinate
+```
+```
+STAR --genomeDir ../star_index \
+     --readFilesIn ../sra_data/SRR11412229.fastq \
+     --outFileNamePrefix covid_rep3_ \
+     --runThreadN 8 \
+     --outSAMtype BAM SortedByCoordinate
+```
+```
+STAR --genomeDir ../star_index \
+     --readFilesIn ../sra_data/SRR11412230.fastq \
+     --outFileNamePrefix covid_rep4_ \
+     --runThreadN 8 \
+     --outSAMtype BAM SortedByCoordinate
+```
+```
+STAR --genomeDir ../star_index \
+     --readFilesIn ../sra_data/SRR11412231.fastq \
+     --outFileNamePrefix covid_rep5_ \
+     --runThreadN 8 \
+     --outSAMtype BAM SortedByCoordinate
+```
+
 3. Output files for each sample:
 - Sorted BAM file (e.g., `mock_rep1_Aligned.sortedByCoord.out.bam`).
 - Alignment log file (e.g., `mock_rep1_Log.final.out`).
 
 ### **Part 3: Gene Expression Quantification**
-1. Use FeatureCounts to count reads mapped to genes for all samples and replicates :
+1.Install `subread`
+```
+module load anaconda3
+```
+```
+conda create -n bioinfo -c bioconda subread
+```
+```
+conda activate bioinfo
+```
+
+2. Use FeatureCounts to count reads mapped to genes for all samples and replicates :
+```
+cd ..
+```
    ```bash
    featureCounts -a annotation.gtf -o counts.txt \
-   mock_rep1_Aligned.sortedByCoord.out.bam \
-   mock_rep2_Aligned.sortedByCoord.out.bam \
-   covid_rep1_Aligned.sortedByCoord.out.bam \
-   covid_rep2_Aligned.sortedByCoord.out.bam
+   mock/mock_rep1_Aligned.sortedByCoord.out.bam \
+   mock/mock_rep2_Aligned.sortedByCoord.out.bam \
+   mock/mock_rep3_Aligned.sortedByCoord.out.bam \
+   mock/mock_rep4_Aligned.sortedByCoord.out.bam \
+   covid/covid_rep1_Aligned.sortedByCoord.out.bam \
+   covid/covid_rep2_Aligned.sortedByCoord.out.bam \
+   covid/covid_rep3_Aligned.sortedByCoord.out.bam \
+   covid/covid_rep4_Aligned.sortedByCoord.out.bam \
+   covid/covid_rep5_Aligned.sortedByCoord.out.bam
 
 - Include all BAM files from mock and COVID-infected replicates.
 
