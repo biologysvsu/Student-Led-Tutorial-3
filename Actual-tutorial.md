@@ -20,6 +20,9 @@ Students will:
 4. Perform differential expression analysis between mock-infected and COVID-19-infected cells using **DESeq2** (or equivalent).
 5. Visualize results such as heatmaps and volcano plots to highlight key differentially expressed genes.
 ---
+
+#PLEASE DO NOT START THE TUTORIAL, DUE TO ISSUES WITH FILE SHARING YOU WILL WATCH THE FIRST 4 PARTS
+
 # Part 1: Setup & Environment Preparation
 
 
@@ -157,16 +160,16 @@ do
          --outSAMtype BAM SortedByCoordinate
 done
 ```
-Submit Job
+### Submit Job
 ```bash
 sbatch star_alignment.sbatch
 ```
-Verify BAM files exist
+### Verify BAM files exist
 ```bash
 ls -lh star_output/
 samtools flagstat star_output/SRR11412215_Aligned.sortedByCoord.out.bam
 ```
-Part 4: Create Counts File Using Subread
+### Part 4: Create Counts File Using Subread
 
 Create Feature Counts Script:
 ```bash
@@ -203,7 +206,7 @@ head counts.txt
 ```
 ### Part 5 Analysis in R Studio: Setup and Load Required Libraries
 #### Ensure that all required packages are installed and loaded:
-```bash
+```r
 # Install Bioconductor and DESeq2 if not installed 
 if (!requireNamespace("BiocManager", quietly = TRUE)) 
     install.packages("BiocManager") 
@@ -214,18 +217,35 @@ library(DESeq2)
 library(ggplot2) 
 library(pheatmap) 
   ```
+### R Studio may need to update these Libraries. Agree by typing in the console and closing and reopening R Studio once updates are complete.
 ### Load and Prepared Count Data
+  - Download Counts File from Student-Led-Tutorial 3
   - Verify File location
   - Set the working directory or use file.choose() to select the count file:
-```bash
-    # Set working directory if needed 
-setwd(YOUR DOWNLOADS FOLDER) 
+    # Set working directory:
+    On Windows:
+```r
+setwd(file.path(Sys.getenv("USERPROFILE"), "Downloads"))
+```
+   # For MAC or Linux:
+```r
+setwd(file.path(Sys.getenv("HOME"), "Downloads"))
+```
+# If you do not know the file path use:
+```r
+print(file.path(Sys.getenv("HOME"), "Downloads"))
+```
+# Or:
+```r
+print(file.path(Sys.getenv("USERPROFILE"), "Downloads"))
+```
  
 # Verify file exists 
+```r
 file.exists("counts.txt")  # Should return TRUE 
 ```
 ### Read and Load count data from the file:
-  ```bash
+  ```r
 counts <- read.table("YOUR DOWNLOADS FOLDER  ", 
                      header=TRUE, 
                      row.names=1, 
@@ -233,44 +253,44 @@ counts <- read.table("YOUR DOWNLOADS FOLDER  ",
                      check.names=FALSE)
   ```
 ### Remove metadata Columns (Chr, Start, End, Strand, Length) 
-  ```bash
+  ```r
 counts <- counts[, -(1:5)]
   ```
 ### Verify data structure
 - `dim(counts)` checks dimensions (genes, samples)
 - `colnames(counts)` ensures only sample names remain
-```bash
+```r
 dim(counts)   
 ```
-```bash
+```r
 colnames(counts)   
 ```
 # Part 5: Create Sample Metadata
 ### Define experimental conditions for each sample: 
-  ```bash
+  ```r
 coldata <- data.frame( 
   condition = c(rep("mock", 4), rep("covid", 5)),  # Adjust sample numbers if needed 
   replicate = c(1:4, 1:5)  )  
   ```
 ### Assign sample names
-```bash
+```r
 rownames(coldata) <- colnames(counts)
 ```
 ### Check that row names match column names (Response should say: TRUE)
-```bash
+```r
 all(rownames(coldata) == colnames(counts))
 ```
 # Part 6: Differential Expression Analysis with DESeq2
 ### Create DESeq2 dataset
-```bash
+```r
 dds <- DESeqDataSetFromMatrix(countData=counts, colData=coldata, design=~condition)
 ```
 ### Run DESeq2 differential expression analysis
-```bash
+```r
 dds <- DESeq(dds)
 ```
 ### Get results
-```bash
+```r
 results <- results(dds
 ```
 ### Save results to CSV
@@ -280,11 +300,11 @@ write.csv(as.data.frame(results), "differential_expression_results.csv")
 # Part 7: Visualize Results
 ### Step 1: Volcano Plot
   - Identify Significant genes
-```bash
+```r
 results$significant <- !is.na(results$padj) & results$padj < 0.05 & abs(results$log2FoldChange) > 1
 ```
 ### Step 2: Generate Volcano Plot
-```bash
+```r
 ggplot(results, aes(x=log2FoldChange, y=-log10(padj), color=significant)) + 
   geom_point(alpha=0.7) + 
   theme_minimal() + 
@@ -292,15 +312,15 @@ ggplot(results, aes(x=log2FoldChange, y=-log10(padj), color=significant)) +
   labs(title="Volcano Plot", x="Log2 Fold Change", y="-log10 Adjusted p-value")
 ```
 ### Step 3: Select the top 50 genes based on adjusted p-value
-```bash
+```r
 library(pheatmap) 
 top_genes <- rownames(results)[order(results$padj, na.last=NA)][1:50]
 ```
 ### Step 4: Normalize couns for heatmap visualization
-```bash
+```r
 normalized_counts <- counts(dds, normalized=TRUE)
 ```
 ### Step 5: Generate heatmap
-```bash
+```r
 pheatmap(normalized_counts[top_genes, ], cluster_rows=TRUE, cluster_cols=TRUE, scale="row")
 ```
