@@ -108,13 +108,13 @@ module load STAR
      --sjdbGTFfile annotation.gtf \ 
      --sjdbOverhang 100 \ 
      --runThreadN 16
-
+  ```
 ### You now should have a STAR index
 - To check:
   ```bash
   ls -lh star_index
   ```
-
+  
 ### Step 3: Submit STAR Indexing Job
 ```bash
 sbatch star_indexing.sbatch
