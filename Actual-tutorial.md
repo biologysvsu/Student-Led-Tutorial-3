@@ -37,7 +37,7 @@ conda activate bioinfo-env
 conda install -c bioconda star subread fastqc samtools -y
 ```
 Deactivate conda
-# Part 2: Data Prepatration**
+# Part 2: Data Preparation
 
 ### Step 1: Download FASTQ Files
 
@@ -53,7 +53,7 @@ Deactivate conda
   wget https://ftp.ensembl.org/pub/release-113/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz 
   ```
 
-#### Gunzip the 'Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz' file
+#### Gunzip the `Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz` file
   ```bash
 gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz 
   ```
@@ -63,7 +63,7 @@ gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 wget https://ftp.ensembl.org/pub/release-113/gtf/homo_sapiens/Homo_sapiens.GRCh38.113.gtf.gz
   ```
 
-#### Gunzip the 'Homo_sapiens.GRCh38.113.gtf.gz' file
+#### Gunzip the `Homo_sapiens.GRCh38.113.gtf.gz` file
   ```bash
 gunzip Homo_sapiens.GRCh38.113.gtf.gz
   ```
@@ -141,7 +141,7 @@ sbatch star_indexing.sbatch
      --outFileNamePrefix mock_rep1_ \ 
      --outSAMtype BAM SortedByCoordinate  
   ```
-  #### Replace 'SRR11412215' with the appropriate sample name for each replicate
+  #### Replace `SRR11412215` with the appropriate sample name for each replicate
   
 ### Step 2: Expected Output Files
   #### Each Sample should generate:
@@ -184,8 +184,8 @@ counts <- read.table("YOUR DOWNLOADS FOLDER  ",
 counts <- counts[, -(1:5)]
   ```
 ### Verify data structure
-- 'dim(counts)' checks dimensions (genes, samples)
-- 'colnames(counts)' ensures only sample names remain
+- `dim(counts)` checks dimensions (genes, samples)
+- `colnames(counts)` ensures only sample names remain
 ```bash
 dim(counts)   
 ```
