@@ -31,10 +31,14 @@ Students will:
 
   ```
 # Create symlink to the SRA data
+```
 ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_3_data/sra_data .
+```
 
 # Create symlink to the STAR index
+```
 ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_3_data/star_index .
+```
 
 ### Step 2: Load anaconda and create bioinformatics environment
 ```bash
