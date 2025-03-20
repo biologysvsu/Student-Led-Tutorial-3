@@ -224,14 +224,7 @@ library(pheatmap)
   - Set the working directory or use file.choose() to select the count file:
     # Set working directory:
     On Windows:
-```r
-setwd(file.path(Sys.getenv("USERPROFILE"), "Downloads"))
-```
-   # For MAC or Linux:
-```r
-setwd(file.path(Sys.getenv("HOME"), "Downloads"))
-```
-# If you do not know the file path use:
+    # If you do not know the file path use:
 ```r
 print(file.path(Sys.getenv("HOME"), "Downloads"))
 ```
@@ -239,12 +232,24 @@ print(file.path(Sys.getenv("HOME"), "Downloads"))
 ```r
 print(file.path(Sys.getenv("USERPROFILE"), "Downloads"))
 ```
- 
+# To set working directory paste in the correct file path:
+```r
+setwd(file.path(Sys.getenv("USERPROFILE"), "Downloads"))
+```
+   # For MAC or Linux:
+```r
+setwd(file.path(Sys.getenv("HOME"), "Downloads"))
+```
+Example of path:
+```r
+setwd("C:/Users/19897/Documents/Downloads")
+```
+
 # Verify file exists 
 ```r
 file.exists("counts.txt")  # Should return TRUE 
 ```
-### Read and Load count data from the file:
+### Read and Load count data from the file, again you will have to change the file path, remember to leave the counts.txt file in the path:
   ```r
 counts <- read.table("C:/Users/YOUR_USERNAME/Downloads/counts.txt", 
                      header=TRUE, 
