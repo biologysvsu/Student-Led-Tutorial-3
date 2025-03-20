@@ -145,8 +145,8 @@ sbatch star_indexing.sbatch
   
 ### Step 2: Expected Output Files
   #### Each Sample should generate:
-  - Sorted BAM file: mock_rep1_Aligned.sortedByCoord.out.bam 
-  - Alignment log file: mock_rep1_Log.final.out
+  - Sorted BAM file: `mock_rep1_Aligned.sortedByCoord.out.bam`
+  - Alignment log file: `mock_rep1_Log.final.out`
    
 ### Step 3: Setup and Load Required Libraries
 #### Ensure that all required packages are installed and loaded:
