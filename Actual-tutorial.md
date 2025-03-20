@@ -70,9 +70,12 @@ conda deactivate
 
 #### Gunzip the `Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz` file
   ```bash
-gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz 
+gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
   ```
-
+#### Gunzip all fastq files
+``` bash
+gunzip *.fastq.gz
+```
 ### Download the Annotation File 
   ```bash
 wget https://ftp.ensembl.org/pub/release-113/gtf/homo_sapiens/Homo_sapiens.GRCh38.113.gtf.gz
