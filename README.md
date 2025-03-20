@@ -203,7 +203,7 @@ conda activate bioinfo
 ```
 cd ..
 ```
-   ```bash
+```bash
    featureCounts -a annotation.gtf -o counts.txt \
    mock/mock_rep1_Aligned.sortedByCoord.out.bam \
    mock/mock_rep2_Aligned.sortedByCoord.out.bam \
@@ -214,7 +214,7 @@ cd ..
    covid/covid_rep3_Aligned.sortedByCoord.out.bam \
    covid/covid_rep4_Aligned.sortedByCoord.out.bam \
    covid/covid_rep5_Aligned.sortedByCoord.out.bam
-
+```
 - Include all BAM files from mock and COVID-infected replicates.
 
 2. Output file:
