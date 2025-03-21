@@ -75,7 +75,9 @@ ggsave("volcano_plot.png", width = 8, height = 6, dpi = 300)
 table(results$significance)
 
 #Add gene accessions to graph
-install.packages("ggrepel")
+if (!requireNamespace("ggrepel", quietly = TRUE)) {
+  install.packages("ggrepel")
+}
 library(ggrepel)
 
 # Filter significant genes
