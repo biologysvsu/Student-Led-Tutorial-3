@@ -3,9 +3,11 @@
 ###DATE: ______
 ###CONTACT: _________
 
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install("DESeq2")
+if (!requireNamespace("DESeq2", quietly = TRUE)) {
+  if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+  BiocManager::install("DESeq2", ask = FALSE)
+}
 library(DESeq2)
 
 # Load data
@@ -63,7 +65,10 @@ ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance))
        x = "Log2 Fold Change",
        y = "-log10 Adjusted P-value") +
   theme(legend.position = "top")
+#Show volcano plot in plots window
+print (volcano)
 
+#Save volcano plot to session directory
 ggsave("volcano_plot.png", width = 8, height = 6, dpi = 300)
 
 #Check the Number of Upregulated vs. Downregulated Genes
@@ -76,7 +81,7 @@ library(ggrepel)
 # Filter significant genes
 top_genes <- subset(results, padj < 0.05 & abs(log2FoldChange) > 1)
 
-ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance)) +
+volcanolabeled <- ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance)) +
   geom_point(alpha = 0.6) +
   geom_text_repel(data = top_genes, aes(label = rownames(top_genes)), size = 3) +  # Add gene labels
   scale_color_manual(values = c("Not Significant" = "gray", "Upregulated" = "red", "Downregulated" = "blue")) +
@@ -85,5 +90,15 @@ ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance))
        x = "Log2 Fold Change",
        y = "-log10 Adjusted P-value") +
   theme(legend.position = "top")
+
+#show volcano in the plots window
+print (volcanolabeled)
+
+#Save labeled volcano plot to session directory
+ggsave("volcano_plot_labels.png", width = 8, height = 6, dpi = 300)
+
+
 #Call top differentially expressed genes
 top_genes
+
+#Choose one gene accession and search them on https://useast.ensembl.org/index.html
