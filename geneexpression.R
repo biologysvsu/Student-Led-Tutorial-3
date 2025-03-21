@@ -57,7 +57,7 @@ results$significance[results$padj < padj_threshold & results$log2FoldChange > lf
 results$significance[results$padj < padj_threshold & results$log2FoldChange < -lfc_threshold] <- "Downregulated"
 
 # Create the volcano plot
-ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance)) +
+volcano <- ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance)) +
   geom_point(alpha = 0.6) +
   scale_color_manual(values = c("Not Significant" = "gray", "Upregulated" = "red", "Downregulated" = "blue")) +
   theme_minimal() +
