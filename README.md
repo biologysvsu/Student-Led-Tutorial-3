@@ -43,6 +43,7 @@ Use the SRA Toolkit (must be installed beforehand if run locally, otherwise avai
    ``` bash
    # Example for a mock-infected sample. More replicates are always better, so repeat step for each SRA    accession.
 
+module load sra-toolkit
 prefetch --max-size 100G SRR11412215 #Handles large files efficiently (downloads in chunks to avoid corruption) 
 fastq-dump --gzip SRR11412215
 ```
@@ -50,6 +51,7 @@ or
 
    ``` bash
    # Example for a COVID-19-infected sample. More replicates are always better, so repeat step for each SRA accession.
+module load sra-toolkit
 prefetch --max-size 100G SRR11412227
 fastq-dump --gzip SRR11412227
 ```
