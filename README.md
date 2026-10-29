@@ -44,7 +44,7 @@ There are more data available in this project, students should be free to explor
 ### Step 1. Create a directory for your transcriptome data
 0. Request resources:
 ```
-interact -t 3:00:00 --ntasks-per-node=16 --mem=30G
+interact -t 4:00:00 --ntasks-per-node=48
 ```
 
 1. Navigate to your personal folder in the Ocean project directory:
@@ -108,14 +108,30 @@ vi download_sra.sh
 ```
 - Type I
 ```
+
 #!/bin/bash
+set -e
+
 module load anaconda3
+source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate sra-tools
- while read -r SRR; do
-   echo "Downloading $SRR..."
-   prefetch --max-size 100G $SRR 
-   fasterq-dump --gzip $SRR --split-files -O fastq_files/
+
+mkdir -p sra-data
+
+while read -r SRR; do
+    echo "Downloading $SRR..."
+
+    prefetch --max-size 100G "$SRR" -O "$PWD/$SRR"
+
+    fasterq-dump "$PWD/$SRR/$SRR.sra" \
+        --threads 8 \
+        --split-files \
+        -O fastq_files/
+
+    gzip -1 fastq_files/"$SRR"*.fastq
+
 done < srr_accessions.txt
+
 conda deactivate
 ```
 -script may give you an error if anaconda3 was loaded before script was run, exit the HPC and run it again.
