@@ -10,8 +10,6 @@
 # Task: Tutorial for Gene Expression Analysis Using STAR, Gene Expression Quantification, and Differential Expression Analysis
   ## In simpler terms: We are going to use RNA-seq analysis for reading single-end reads and then visualize the results
   
-# Date: March 20th
-
 ## **Objective**
 Students will:
 1. Download RNA-seq data for **mock-infected** and **COVID-19-infected** human cell lines from the provided SRA project.
