@@ -202,7 +202,7 @@ STAR --genomeDir ../star_index \
 STAR --genomeDir ../star_index \
      --readFilesIn ../sra-data/SRR11412217_1.fastq \
      --outFileNamePrefix mock_rep3_ \
-     --runThreadN 8 \
+     --runThreadN 32 \
      --outSAMtype BAM SortedByCoordinate
 ```
 ```
