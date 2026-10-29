@@ -386,3 +386,5 @@ write.csv(label_genes, "top_genes.csv",
 ```
 Rscript analysis.R
 ```
+
+4. Search gene IDs in https://www.ensembl.org/search
