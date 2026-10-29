@@ -1,6 +1,5 @@
 # Student-Led-Tutorial-3
 # Task: Tutorial for Gene Expression Analysis Using STAR, Gene Expression Quantification, and Differential Expression Analysis
-# Date: March 20th
 
 ## **Objective**
 Students will:
@@ -34,34 +33,97 @@ The dataset comes from the **NCBI BioProject PRJNA615032**, which includes RNA-s
 - **Mock-infected cells**:
   - SRA Accessions: `SRR11412215`, `SRR11412216`, `SRR11412217`, `SRR11412218` (4 replicates).
 - **COVID-19-infected cells**:
-  - SRA Accessions: `SRR11412227`, `SRR11412228`, `SRR11412229`, `SRR11412230`, `SRR11412231` (5 replicates).
+  - SRA Accessions: `SRR11412227`, `SRR11412228`, `SRR11412229`, `SRR11412230` (4 replicates).
 There are more data available in this project, students should be free to explore these data and modify SRA accessions accordingly.
-
-### **Download Instructions**
-Use the SRA Toolkit (must be installed beforehand if run locally, otherwise available in most HPCs) to download paired-end FASTQ files:
-
-   ``` bash
-   # Example for a mock-infected sample. More replicates are always better, so repeat step for each SRA    accession.
-
-module load sra-toolkit
-prefetch --max-size 100G SRR11412215 #Handles large files efficiently (downloads in chunks to avoid corruption) 
-fastq-dump --gzip SRR11412215
-```
-or
-
-   ``` bash
-   # Example for a COVID-19-infected sample. More replicates are always better, so repeat step for each SRA accession.
-module load sra-toolkit
-prefetch --max-size 100G SRR11412227
-fastq-dump --gzip SRR11412227
-```
 
 ## **Tasks and Deliverables**
 ### **Part 1: Data Preparation**
 1. Download all replicates for mock and COVID-19-infected samples:
         Mock-infected: SRR11412215 to SRR11412218.
-        COVID-19-infected: SRR11412227 to SRR11412231.
-2. Download the reference genome (FASTA) and annotation file (GTF):
+        COVID-19-infected: SRR11412227 to SRR11412230.
+### Step 1. Create a directory for your transcriptome data
+0. Request resources:
+```
+interact -t 3:00:00 --ntasks-per-node=16 --mem=30G
+```
+
+1. Navigate to your personal folder in the Ocean project directory:
+
+   `cd /ocean/projects/bio260081p/your-username`
+
+   Replace `your-username` with your actual username.
+
+2. Create a new folder named `transcriptome` and move into it:
+
+   `mkdir -p transcriptome`
+
+   `cd transcriptome`
+
+3. Confirm that you are in the correct directory by typing:
+
+   `pwd`
+
+   Your path should look like this:
+
+   `/ocean/projects/bio260081p/your-username/transcriptome`
+
+### Step 2. Create a file containing the SRA accession numbers
+
+1. Open the `vi` text editor to create a file named `srr_accessions.txt`:
+
+   `vi srr_accessions.txt`
+
+2. Press lowercase **`i`** to enter *Insert Mode*.
+
+3. Paste the following accession numbers, **one per line**:
+
+   ```
+   SRR11412215
+   SRR11412216
+   SRR11412217
+   SRR11412218
+   SRR11412227
+   SRR11412228
+   SRR11412229
+   SRR11412230
+   ```
+
+4. Save the file and exit `vi`:
+   - Press **Esc** to leave Insert Mode.
+   - Type **`:wq`**.
+   - Press **Enter** to save and exit.
+
+5. Verify that your file was saved correctly:
+
+   `cat srr_accessions.txt`
+
+   You should see all nine accession numbers displayed, one per line.
+```
+module load anaconda3
+conda create -n sra-tools -c conda-forge -c bioconda sra-tools -y
+```
+
+```
+vi download_sra.sh
+```
+- Type I
+```
+#!/bin/bash
+module load anaconda3
+conda activate sra-tools
+ while read -r SRR; do
+   echo "Downloading $SRR..."
+   prefetch --max-size 100G $SRR 
+   fasterq-dump --gzip $SRR --split-files -O fastq_files/
+done < srr_accessions.txt
+conda deactivate
+```
+-script may give you an error if anaconda3 was loaded before script was run, exit the HPC and run it again.
+-Run script using
+```
+bash download_sra.sh &
+```
+3. Download the reference genome (FASTA) and annotation file (GTF):
 Source: Ensembl GRCh38 human genome:
 - FASTA: Download FASTA file:
 ```
@@ -101,8 +163,10 @@ salloc --mem=50G --time=4:00:00 --cpus-per-task=16
     --genomeFastaFiles reference.fasta --sjdbGTFfile annotation.gtf --sjdbOverhang 100
 7. Create a symlink to copy index files to your current directory
 ```
-ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_3_data/star_index .
-ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_3_data/sra_data .
+ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/star_index .
+ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/sra_data .
+ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/reference.fasta .
+
 
 ```
 ### **Part 2: Align Reads with STAR**
