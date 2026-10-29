@@ -26,19 +26,19 @@ Students will:
 
 ### Step 1: Navigate to the shared directory and create a new  working directory for this tutorial:
   ```bash
-  cd /ocean/projects/agr250001p/shared/ 
-  mkdir Tutorial-3 
-  cd Tutorial-3
+  cd /ocean/projects/bio260081p/shared/ 
+  mkdir transcriptome 
+  cd transcriptome
 
   ```
 # Create symlink to the SRA data
 ```
-ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_3_data/sra_data .
+ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/sra_data .
 ```
 
 # Create symlink to the STAR index
 ```
-ln -s /ocean/projects/agr250001p/shared/tutorial-data/tutorial_3_data/star_index .
+ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/star_index .
 ```
 
 ### Step 2: Load anaconda and create bioinformatics environment
