@@ -289,7 +289,7 @@ cat counts.txt.summary
 ### **Part 4: Differential Expression Analysis**
 1. Install R and RStudio
 ```
-conda install -n rnaseq -c conda-forge r-ggplot2 r-ggrepel -y
+conda create -n rnaseq -c conda-forge r-base r-ggplot2 r-ggrepel -y
 ```
 ```
 conda activate rnaseq
