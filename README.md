@@ -209,7 +209,7 @@ STAR --genomeDir ../star_index \
 STAR --genomeDir ../star_index \
      --readFilesIn ../sra-data/SRR11412218_1.fastq \
      --outFileNamePrefix mock_rep4_ \
-     --runThreadN 16 \
+     --runThreadN 32 \
      --outSAMtype BAM SortedByCoordinate
 ```
 2. Repeat with COVID-infected samples:
@@ -221,7 +221,7 @@ cd covid
 STAR --genomeDir ../star_index \
      --readFilesIn ../sra-data/SRR11412227_1.fastq \
      --outFileNamePrefix covid_rep1_ \
-     --runThreadN 16 \
+     --runThreadN 32 \
      --outSAMtype BAM SortedByCoordinate
 ```
 - Replace SRR11412227 with the appropriate sample name for each replicate (5).
@@ -229,21 +229,21 @@ STAR --genomeDir ../star_index \
 STAR --genomeDir ../star_index \
      --readFilesIn ../sra-data/SRR11412228_1.fastq \
      --outFileNamePrefix covid_rep2_ \
-     --runThreadN 16 \
+     --runThreadN 32 \
      --outSAMtype BAM SortedByCoordinate
 ```
 ```
 STAR --genomeDir ../star_index \
      --readFilesIn ../sra-data/SRR11412229_1.fastq \
      --outFileNamePrefix covid_rep3_ \
-     --runThreadN 16 \
+     --runThreadN 32 \
      --outSAMtype BAM SortedByCoordinate
 ```
 ```
 STAR --genomeDir ../star_index \
      --readFilesIn ../sra-data/SRR11412230_1.fastq \
      --outFileNamePrefix covid_rep4_ \
-     --runThreadN 16 \
+     --runThreadN 32 \
      --outSAMtype BAM SortedByCoordinate
 ```
 
