@@ -174,6 +174,7 @@ interact -t 4:00:00 --ntasks-per-node=48
 ```
 ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/star_index .
 ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/reference.fasta .
+ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/annotation.gtf .
 ```
 ### **Part 2: Align Reads with STAR**
 1. Align each sample (mock ) to the genome:
@@ -285,98 +286,103 @@ cat counts.txt.summary
 ``` 
 ### **Part 4: Differential Expression Analysis**
 1. Install R and RStudio
-2. Open RStudio
-3. Create and save new project
-4. Open new script.
-5. Copy, paste and run this script in R.
-```R
-###STUDENT LED TUTORIAL 3###
-###NAME: ______
-###DATE: ______
-###CONTACT: _________
+```
+conda install -n rnaseq -c conda-forge r-ggplot2 r-ggrepel -y
+```
+```
+conda activate rnaseq
+```
+2. In vi editor create `analysis.R`
+6. Copy and paste this script.
+```
 
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install("DESeq2")
+### STUDENT-LED TUTORIAL 3 ###
+
 library(DESeq2)
-
-# Load data
-counts <- read.table("counts.txt", header=TRUE, row.names=1, sep="\t")
-counts <- counts[, -(1:5)]  # Now only sample columns remain
-
-coldata <- data.frame(
-  condition = factor(c(rep("mock", 4), rep("covid", 5))),  # Convert to factor
-  replicate = c(1:4, 1:5)
-)
-
-rownames(coldata) <- colnames(counts)
-
-# Check if dimensions match
-if (ncol(counts) != nrow(coldata)) {
-  stop("Error: counts and coldata dimensions do not match!")
-}
-
-# Create DESeq2 dataset
-dds <- DESeqDataSetFromMatrix(countData=counts, colData=coldata, design=~condition)
-
-# Run DESeq2 analysis
-dds <- DESeq(dds)
-
-# Get and save results
-results <- results(dds)
-
-# Remove NA values
-results <- na.omit(results)
-
-# Save results to CSV
-write.csv(results, "differential_expression_results.csv")
-
-# View results structure
-head(results)
-
-#Create Volcano Plot
 library(ggplot2)
-
-# Define thresholds for significance
-padj_threshold <- 0.05  # Adjusted p-value cutoff
-lfc_threshold <- 1       # Log2 fold change cutoff
-
-# Add significance categories
-results$significance <- "Not Significant"
-results$significance[results$padj < padj_threshold & results$log2FoldChange > lfc_threshold] <- "Upregulated"
-results$significance[results$padj < padj_threshold & results$log2FoldChange < -lfc_threshold] <- "Downregulated"
-
-# Create the volcano plot
-ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance)) +
-  geom_point(alpha = 0.6) +
-  scale_color_manual(values = c("Not Significant" = "gray", "Upregulated" = "red", "Downregulated" = "blue")) +
-  theme_minimal() +
-  labs(title = "Volcano Plot of Differential Expression",
-       x = "Log2 Fold Change",
-       y = "-log10 Adjusted P-value") +
-  theme(legend.position = "top")
-
-ggsave("volcano_plot.png", width = 8, height = 6, dpi = 300)
-
-#Check the Number of Upregulated vs. Downregulated Genes
-table(results$significance)
-
-#Add gene accessions to graph
-install.packages("ggrepel")
 library(ggrepel)
 
-# Filter significant genes
-top_genes <- subset(results, padj < 0.05 & abs(log2FoldChange) > 1)
+# 1. Load featureCounts data
+counts <- read.table("counts.txt", header=TRUE,
+                     row.names=1, sep="\t")
+counts <- as.matrix(counts[, -(1:5)])
 
-ggplot(results, aes(x = log2FoldChange, y = -log10(padj), color = significance)) +
-  geom_point(alpha = 0.6) +
-  geom_text_repel(data = top_genes, aes(label = rownames(top_genes)), size = 3) +  # Add gene labels
-  scale_color_manual(values = c("Not Significant" = "gray", "Upregulated" = "red", "Downregulated" = "blue")) +
+# 2. Define experimental groups
+stopifnot(ncol(counts) == 8)
+
+coldata <- data.frame(
+  condition = factor(c(rep("mock", 4), rep("covid", 4)),
+                     levels=c("mock", "covid")),
+  row.names = colnames(counts)
+)
+
+# 3. Run DESeq2 analysis
+dds <- DESeqDataSetFromMatrix(
+  countData=counts,
+  colData=coldata,
+  design=~condition
+)
+
+dds <- DESeq(dds)
+res <- results(dds, contrast=c("condition", "covid", "mock"))
+
+# 4. Save results
+write.csv(as.data.frame(res), "DESeq2_results.csv")
+
+# 5. Identify differentially expressed genes
+res <- as.data.frame(res)
+res$Gene <- rownames(res)
+res <- res[!is.na(res$padj) & !is.na(res$log2FoldChange), ]
+
+res$significance <- "Not Significant"
+res$significance[res$padj < 0.05 & res$log2FoldChange > 1] <- "Upregulated"
+res$significance[res$padj < 0.05 & res$log2FoldChange < -1] <- "Downregulated"
+
+# Count genes in each category
+print(table(res$significance))
+
+# 6. Select top 5 upregulated genes
+up_genes <- subset(res, significance == "Upregulated")
+up_genes <- head(up_genes[order(up_genes$padj), ], 5)
+
+# 7. Select top 5 downregulated genes
+down_genes <- subset(res, significance == "Downregulated")
+down_genes <- head(down_genes[order(down_genes$padj), ], 5)
+
+# Print selected genes
+print(up_genes)
+print(down_genes)
+
+# Combine genes for labeling
+label_genes <- rbind(up_genes, down_genes)
+
+# 8. Create volcano plot with gene labels
+p <- ggplot(res, aes(x=log2FoldChange, y=-log10(padj),
+                     color=significance)) +
+  geom_point(alpha=0.6, size=1) +
+  geom_text_repel(data=label_genes,
+                  aes(label=Gene),
+                  size=3, max.overlaps=Inf) +
+  scale_color_manual(values=c(
+    "Not Significant"="gray",
+    "Upregulated"="red",
+    "Downregulated"="blue")) +
   theme_minimal() +
-  labs(title = "Volcano Plot of Differential Expression",
-       x = "Log2 Fold Change",
-       y = "-log10 Adjusted P-value") +
-  theme(legend.position = "top")
-#Call top differentially expressed genes
-top_genes
+  labs(title="Differential Gene Expression",
+       x="Log2 Fold Change (COVID vs Mock)",
+       y="-Log10 Adjusted P-value") +
+  theme(legend.position="top")
+
+# 9. Save volcano plot
+ggsave("volcano_plot.png", plot=p,
+       width=8, height=6, dpi=300)
+
+# 10. Save selected genes
+write.csv(label_genes, "top_genes.csv",
+          row.names=FALSE)
+
+```
+3. run script
+```
+Rscript analysis.R
 ```
