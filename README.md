@@ -290,6 +290,7 @@ cat counts.txt.summary
 1. Install R and RStudio
 ```
 conda create -n rnaseq -c conda-forge r-base r-ggplot2 r-ggrepel -y
+conda install -n rnaseq -c conda-forge -c bioconda bioconductor-deseq2 -y
 ```
 ```
 conda activate rnaseq
