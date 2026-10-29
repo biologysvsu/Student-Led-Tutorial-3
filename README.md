@@ -102,7 +102,9 @@ interact -t 4:00:00 --ntasks-per-node=48
 module load anaconda3
 conda create -n sra-tools -c conda-forge -c bioconda sra-tools -y
 ```
-
+```
+conda activate sra-tools
+```
 ```
 vi download_sra.sh
 ```
