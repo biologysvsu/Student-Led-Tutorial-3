@@ -389,5 +389,11 @@ write.csv(label_genes, "top_genes.csv",
 ```
 Rscript analysis.R
 ```
+4. Volcano plot can be downloaded from the bridges2 on demand. Depending on the time of the day, the on-demand may take some time to load, be patient.
+   - Alternatively you can use this command line to download the file directly to your computer:
+   ```
+   scp jparedesmontero@data.bridges2.psc.edu:/ocean/projects/bio260081p/jparedesmontero/transcriptome/volcano_plot.png "$HOME\Downloads\volcano_plot.png"
+   ```
+   ### Make sure you replace 'jparedesmontero' with your username. The file will be in your downloads folder.
 
 4. Search gene IDs in https://www.ensembl.org/search
