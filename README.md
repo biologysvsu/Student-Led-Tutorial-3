@@ -108,37 +108,21 @@ vi download_sra.sh
 ```
 - Type I
 ```
-
 #!/bin/bash
-set -e
-
-module load anaconda3
-source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate sra-tools
-
 mkdir -p sra-data
 
 while read -r SRR; do
-    echo "Downloading $SRR..."
-
-    prefetch --max-size 100G "$SRR" -O "$PWD/$SRR"
-
-    fasterq-dump "$PWD/$SRR/$SRR.sra" \
-        --threads 8 \
-        --split-files \
-        -O fastq_files/
-
-    gzip -1 fastq_files/"$SRR"*.fastq
-
+    prefetch "$SRR" -O "$PWD/$SRR"
+    fasterq-dump "$SRR" -e 8 --split-files -O sra-data/
 done < srr_accessions.txt
-
-conda deactivate
 ```
 -script may give you an error if anaconda3 was loaded before script was run, exit the HPC and run it again.
 -Run script using
 ```
 bash download_sra.sh &
 ```
+
+# (OPTIONAL)
 3. Download the reference genome (FASTA) and annotation file (GTF):
 Source: Ensembl GRCh38 human genome:
 - FASTA: Download FASTA file:
@@ -189,47 +173,40 @@ interact -t 4:00:00 --ntasks-per-node=48
 7. Create a symlink to copy index files to your current directory
 ```
 ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/star_index .
-ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/sra_data .
 ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/reference.fasta .
-
-
 ```
 ### **Part 2: Align Reads with STAR**
-1. Open an interactive session to run this alignment
-```
-salloc --nodes=1 --ntasks=1 --cpus-per-task=16 --mem=64G --time=03:00:00 --partition=RM
-```
-2. Align each sample (mock ) to the genome:
+1. Align each sample (mock ) to the genome:
 ```bash
 mkdir mock
 cd mock
 
 STAR --genomeDir ../star_index \
-     --readFilesIn ../sra_data/SRR11412218.fastq \
-     --outFileNamePrefix mock_rep4_ \
-     --runThreadN 8 \
+     --readFilesIn ../sra-data/SRR11412215_1.fastq \
+     --outFileNamePrefix mock_rep1_ \
+     --runThreadN 16 \
      --outSAMtype BAM SortedByCoordinate
 ```
 - Replace SRR11412215 with the appropriate sample name for each replicate (4).
 ```
 STAR --genomeDir ../star_index \
-     --readFilesIn ../sra_data/SRR11412216.fastq \
+     --readFilesIn ../sra-data/SRR11412216_1.fastq \
      --outFileNamePrefix mock_rep2_ \
-     --runThreadN 8 \
+     --runThreadN 32 \
      --outSAMtype BAM SortedByCoordinate
 ```
 ```
 STAR --genomeDir ../star_index \
-     --readFilesIn ../sra_data/SRR11412217.fastq \
+     --readFilesIn ../sra-data/SRR11412217_1.fastq \
      --outFileNamePrefix mock_rep3_ \
-     --runThreadN 8 \
+     --runThreadN 16 \
      --outSAMtype BAM SortedByCoordinate
 ```
 ```
 STAR --genomeDir ../star_index \
-     --readFilesIn ../sra_data/SRR11412218.fastq \
+     --readFilesIn ../sra-data/SRR11412218_1.fastq \
      --outFileNamePrefix mock_rep4_ \
-     --runThreadN 8 \
+     --runThreadN 16 \
      --outSAMtype BAM SortedByCoordinate
 ```
 2. Repeat with COVID-infected samples:
@@ -239,38 +216,31 @@ mkdir covid
 cd covid
 
 STAR --genomeDir ../star_index \
-     --readFilesIn ../sra_data/SRR11412231.fastq \
-     --outFileNamePrefix covid_rep5_ \
-     --runThreadN 8 \
+     --readFilesIn ../sra-data/SRR11412227_1.fastq \
+     --outFileNamePrefix covid_rep1_ \
+     --runThreadN 16 \
      --outSAMtype BAM SortedByCoordinate
 ```
 - Replace SRR11412227 with the appropriate sample name for each replicate (5).
 ```
 STAR --genomeDir ../star_index \
-     --readFilesIn ../sra_data/SRR11412228.fastq \
+     --readFilesIn ../sra-data/SRR11412228_1.fastq \
      --outFileNamePrefix covid_rep2_ \
-     --runThreadN 8 \
+     --runThreadN 16 \
      --outSAMtype BAM SortedByCoordinate
 ```
 ```
 STAR --genomeDir ../star_index \
-     --readFilesIn ../sra_data/SRR11412229.fastq \
+     --readFilesIn ../sra-data/SRR11412229_1.fastq \
      --outFileNamePrefix covid_rep3_ \
-     --runThreadN 8 \
+     --runThreadN 16 \
      --outSAMtype BAM SortedByCoordinate
 ```
 ```
 STAR --genomeDir ../star_index \
-     --readFilesIn ../sra_data/SRR11412230.fastq \
+     --readFilesIn ../sra-data/SRR11412230_1.fastq \
      --outFileNamePrefix covid_rep4_ \
-     --runThreadN 8 \
-     --outSAMtype BAM SortedByCoordinate
-```
-```
-STAR --genomeDir ../star_index \
-     --readFilesIn ../sra_data/SRR11412231.fastq \
-     --outFileNamePrefix covid_rep5_ \
-     --runThreadN 8 \
+     --runThreadN 16 \
      --outSAMtype BAM SortedByCoordinate
 ```
 
@@ -303,8 +273,7 @@ cd ..
    covid/covid_rep1_Aligned.sortedByCoord.out.bam \
    covid/covid_rep2_Aligned.sortedByCoord.out.bam \
    covid/covid_rep3_Aligned.sortedByCoord.out.bam \
-   covid/covid_rep4_Aligned.sortedByCoord.out.bam \
-   covid/covid_rep5_Aligned.sortedByCoord.out.bam
+   covid/covid_rep4_Aligned.sortedByCoord.out.bam
 ```
 - Include all BAM files from mock and COVID-infected replicates.
 
