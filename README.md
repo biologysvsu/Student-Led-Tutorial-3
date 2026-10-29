@@ -155,12 +155,21 @@ mv Homo_sapiens.GRCh38.113.gtf annotation.gtf
   ```
 4. **(OPTIONAL)** Run an interactive session requesting high memory resources
 ```
-salloc --mem=50G --time=4:00:00 --cpus-per-task=16
+interact -t 4:00:00 --ntasks-per-node=48
 ```
 6. **(OPTIONAL)** Generate the STAR genome index (This step requires 3 hours to complete in 16 cpus with total RAM of 50 Gigabytes):
    ```bash
-   STAR --runMode genomeGenerate --genomeDir star_index \
-    --genomeFastaFiles reference.fasta --sjdbGTFfile annotation.gtf --sjdbOverhang 100
+  mkdir -p star_index 
+  
+  STAR --runMode genomeGenerate \
+  --runThreadN 48 \
+  --genomeDir star_index \
+  --genomeFastaFiles reference.fasta \
+  --sjdbGTFfile annotation.gtf \
+  --sjdbOverhang 100
+
+# START HERE
+
 7. Create a symlink to copy index files to your current directory
 ```
 ln -s /ocean/projects/bio260081p/shared/tutorial-data/tutorial_3_data/star_index .
